@@ -108,7 +108,6 @@ public class RotationLockTile extends QSTile<QSTile.BooleanState> {
                     : R.drawable.ic_qs_rotation_landscape);
             }
         } else {
-<<<<<<< HEAD
             final AnimationIcon icon;
             if (rotationLocked) {
                 final int label = portrait ? R.string.quick_settings_rotation_locked_portrait_label
@@ -121,11 +120,6 @@ public class RotationLockTile extends QSTile<QSTile.BooleanState> {
             }
             icon.setAllowAnimation(userInitiated);
             state.icon = icon;
-=======
-            state.label = mContext.getString(R.string.quick_settings_rotation_unlocked_label);
-            state.icon = ResourceIcon.get(portrait ? R.drawable.ic_qs_rotation_portrait
-                    : R.drawable.ic_qs_rotation_landscape);
->>>>>>> 12c1508... Fix rotation tile icon for actual state
         }
 
         state.contentDescription = getAccessibilityString(rotationLocked,

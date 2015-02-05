@@ -47,6 +47,7 @@ public class QSConstants {
     public static final String TILE_VISUALIZER = "visualizer";
     public static final String TILE_SCREEN_TIMEOUT = "screen_timeout";
     public static final String TILE_SCREENSHOT = "screenshot";
+    public static final String TILE_SCREENRECORD = "screenrecord";
     public static final String TILE_SYNC = "sync";
     public static final String TILE_BRIGHTNESS = "brightness";
     public static final String TILE_BATTERY_SAVER = "battery_saver";
@@ -117,12 +118,30 @@ public class QSConstants {
         STATIC_TILES_AVAILABLE.add(TILE_SLIMACTION);
         STATIC_TILES_AVAILABLE.add(TILE_SYSTEMUI_RESTART);
         STATIC_TILES_AVAILABLE.add(TILE_SLIM_FLOATS);
-
         DYNAMIC_TILES_AVAILABLE.add(DYNAMIC_TILE_NEXT_ALARM);
         DYNAMIC_TILES_AVAILABLE.add(DYNAMIC_TILE_IME_SELECTOR);
         DYNAMIC_TILES_AVAILABLE.add(DYNAMIC_TILE_ADB);
-
         TILES_AVAILABLE.addAll(STATIC_TILES_AVAILABLE);
         TILES_AVAILABLE.addAll(DYNAMIC_TILES_AVAILABLE);        
+        TILES_AVAILABLE.addAll(TILES_DEFAULT);
+        TILES_AVAILABLE.add(TILE_INVERSION);
+        TILES_AVAILABLE.add(TILE_HOTSPOT);
+        TILES_AVAILABLE.add(TILE_NOTIFICATIONS);
+        TILES_AVAILABLE.add(TILE_DATA);
+        TILES_AVAILABLE.add(TILE_ROAMING);
+        TILES_AVAILABLE.add(TILE_DDS);
+        TILES_AVAILABLE.add(TILE_APN);
+        TILES_AVAILABLE.add(TILE_PROFILES);
+        TILES_AVAILABLE.add(TILE_PERFORMANCE);
+        TILES_AVAILABLE.add(TILE_ADB_NETWORK);
+        TILES_AVAILABLE.add(TILE_NFC);
+        TILES_AVAILABLE.add(TILE_COMPASS);
+        TILES_AVAILABLE.add(TILE_LOCKSCREEN);
+        TILES_AVAILABLE.add(TILE_LTE);
+        TILES_AVAILABLE.add(TILE_VISUALIZER);
+        TILES_AVAILABLE.add(TILE_SCREEN_TIMEOUT);
+        TILES_AVAILABLE.add(TILE_SCREENSHOT);
+        TILES_AVAILABLE.add(TILE_SCREENRECORD);
+        TILES_AVAILABLE.add(TILE_SYNC);
     }
 }

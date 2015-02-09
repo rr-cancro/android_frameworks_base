@@ -74,6 +74,7 @@ import com.android.systemui.qs.tiles.ScreenshotTile;
 import com.android.systemui.qs.tiles.ScreenTimeoutTile;
 import com.android.systemui.qs.tiles.SyncTile;
 import com.android.systemui.qs.tiles.NavBarTile;
+import com.android.systemui.qs.tiles.PowerMenuTile;
 import com.android.systemui.qs.tiles.AppCircleBarTile;
 import com.android.systemui.qs.tiles.WifiTile;
 import com.android.systemui.qs.tiles.SlimActionTile;
@@ -388,6 +389,8 @@ public class QSTileHost implements QSTile.Host {
                 return new MusicTile(this);
             case QSConstants.TILE_HEADS_UP:
                 return new HeadsUpTile(this);
+            case QSConstants.TILE_POWER_MENU:
+                return new PowerMenuTile(this);
             case QSConstants.TILE_REBOOT:
                 return new RebootTile(this);
             default:

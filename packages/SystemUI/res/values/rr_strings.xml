@@ -80,6 +80,8 @@
     <string name="shortcut_reboot">Reboot</string>
     <string name="shortcut_recovery">Recovery</string>
     <string name="shortcut_toggle_title">Action to perform</string>
+    <!-- Power menu -->
+    <string name="quick_settings_power_menu_label">Power Menu</string>
 
     <!-- Kill app toast -->
     <string name="app_killed_message">App Killed</string>  

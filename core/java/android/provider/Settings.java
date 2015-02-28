@@ -2718,7 +2718,24 @@ public final class Settings {
          * @hide
          */
         public static final String NAVIGATION_BAR_SHOW = "navigation_bar_show";
-        
+         /**
+         * Color of the quick settings panel background
+         * @hide
+         */
+        public static final String QS_BACKGROUND_COLOR = "qs_background_color";
+
+        /**
+         * Color of the quick settings icons
+         * @hide
+         */
+        public static final String QS_ICON_COLOR = "qs_icons_color";
+
+        /**
+         * Color of the quick settings text
+         * @hide
+         */
+        public static final String QS_TEXT_COLOR = "qs_text_color";          
+
         /**
          * Whether to allow one finger quick settings expansion on the right side of the statusbar.
          * @hide

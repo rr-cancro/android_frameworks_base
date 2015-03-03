@@ -2724,6 +2724,12 @@ public final class Settings {
          */
         public static final String QS_BACKGROUND_COLOR = "qs_background_color";
 
+         /**
+         * Transparent shade
+         * @hide
+         */
+        public static final String QS_COLOR_SWITCH = "qs_color_switch";
+
         /**
          * Color of the quick settings icons
          * @hide

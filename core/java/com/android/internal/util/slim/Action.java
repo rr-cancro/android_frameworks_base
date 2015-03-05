@@ -23,6 +23,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.input.InputManager;
+import android.hardware.TorchManager;
 import android.hardware.ITorchService;
 import android.media.AudioManager;
 import android.media.session.MediaSessionLegacyHelper;
@@ -72,7 +73,7 @@ public class Action {
                 Log.w("Action", "Error getting window manager service", e);
             }
 
-            IStatusBarService barService = IStatusBarService.Stub.asInterface(
+            final IStatusBarService barService = IStatusBarService.Stub.asInterface(
                     ServiceManager.getService(Context.STATUS_BAR_SERVICE));
             if (barService == null) {
                 return; // ouch
@@ -100,53 +101,6 @@ public class Action {
             } else if (action.equals(ActionConstants.ACTION_SEARCH)) {
                 triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH, isLongpress);
                 return;
-            } else if (action.equals(ActionConstants.ACTION_KILL)) {
-                if (isKeyguardShowing) return;
-                try {
-                    barService.toggleKillApp();
-                } catch (RemoteException e) {}
-                return;
-            } else if (action.equals(ActionConstants.ACTION_NOTIFICATIONS)) {
-                if (isKeyguardShowing && isKeyguardSecure) {
-                    return;
-                }
-                try {
-                    barService.expandNotificationsPanel();
-                } catch (RemoteException e) {
-                }
-                return;
-            } else if (action.equals(ActionConstants.ACTION_SETTINGS_PANEL)) {
-                if (isKeyguardShowing && isKeyguardSecure) {
-                    return;
-                }
-                try {
-                    barService.expandSettingsPanel();
-                } catch (RemoteException e) {}
-            } else if (action.equals(ActionConstants.ACTION_LAST_APP)) {
-                if (isKeyguardShowing) {
-                    return;
-                }
-                try {
-                    barService.toggleLastApp();
-                } catch (RemoteException e) {
-                }
-                return;
-            } else if (action.equals(ActionConstants.ACTION_TORCH)) {
-                try {
-                    ITorchService torchService = ITorchService.Stub.asInterface(
-                            ServiceManager.getService(Context.TORCH_SERVICE));
-                    torchService.toggleTorch();
-                } catch (RemoteException e) {
-                }
-                return;
-            } else if (action.equals(ActionConstants.ACTION_POWER_MENU)) {
-                try {
-                    //IWindowManager windowManagerService = IWindowManager.Stub.asInterface(
-                    //ServiceManager.getService(Context.WINDOW_SERVICE));
-                    windowManagerService.toggleGlobalMenu();
-                } catch (RemoteException e) {
-                }
-                return;
             } else if (action.equals(ActionConstants.ACTION_MENU)
                     || action.equals(ActionConstants.ACTION_MENU_BIG)) {
                 triggerVirtualKeypress(KeyEvent.KEYCODE_MENU, isLongpress);
@@ -162,6 +116,12 @@ public class Action {
                 return;
             } else if (action.equals(ActionConstants.ACTION_IME_NAVIGATION_DOWN)) {
                 triggerVirtualKeypress(KeyEvent.KEYCODE_DPAD_DOWN, isLongpress);
+                return;
+            } else if (action.equals(ActionConstants.ACTION_POWER_MENU)) {
+                try {
+                    windowManagerService.toggleGlobalMenu();
+                } catch (RemoteException e) {
+                }
                 return;
             } else if (action.equals(ActionConstants.ACTION_POWER)) {
                 PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -198,9 +158,34 @@ public class Action {
                 }
                 Settings.System.putIntForUser(
                         context.getContentResolver(),
-                        Settings.System.NAVIGATION_BAR_SHOW,
+                        Settings.System.DEV_FORCE_SHOW_NAVBAR,
                         navBarState ? 0 : 1, UserHandle.USER_CURRENT);
                 return;
+            } else if (action.equals(ActionConstants.ACTION_RECENTS)) {
+                if (isKeyguardShowing) {
+                    return;
+                }
+                try {
+                    barService.toggleRecentApps();
+                } catch (RemoteException e) {
+                }
+                return;
+            } else if (action.equals(ActionConstants.ACTION_NOTIFICATIONS)) {
+                if (isKeyguardShowing && isKeyguardSecure) {
+                    return;
+                }
+                try {
+                    barService.expandNotificationsPanel();
+                } catch (RemoteException e) {
+                }
+                return;
+            } else if (action.equals(ActionConstants.ACTION_SETTINGS_PANEL)) {
+                if (isKeyguardShowing && isKeyguardSecure) {
+                    return;
+                }
+                try {
+                    barService.expandSettingsPanel();
+                } catch (RemoteException e) {}
             } else if (action.equals(ActionConstants.ACTION_KILL)) {
                 if (isKeyguardShowing) {
                     return;
@@ -219,21 +204,20 @@ public class Action {
                 } catch (RemoteException e) {
                 }
                 return;
-            } else if (action.equals(ActionConstants.ACTION_SCREENSHOT)) {
+           } else if (action.equals(ActionConstants.ACTION_SCREENSHOT)) {
                 try {
                     barService.toggleScreenshot();
                 } catch (RemoteException e) {
                 }
                 return;
-            } else if (action.equals(ActionConstants.ACTION_RECENTS)) {
-                if (isKeyguardShowing) {
-                    return;
-                }
+/*            } else if (action.equals(ActionConstants.ACTION_TORCH)) {
                 try {
-                    barService.toggleRecentApps();
+                    ITorchService torchService = ITorchService.Stub.asInterface(
+                            ServiceManager.getService(Context.TORCH_SERVICE));
+                    torchService.toggleTorch();
                 } catch (RemoteException e) {
                 }
-                return;
+                return; */
             } else if (action.equals(ActionConstants.ACTION_ASSIST)
                     || action.equals(ActionConstants.ACTION_KEYGUARD_SEARCH)) {
                 Intent intent = ((SearchManager) context.getSystemService(Context.SEARCH_SERVICE))
@@ -340,10 +324,15 @@ public class Action {
                     powerManager.wakeUp(SystemClock.uptimeMillis());
                 }
                 return;
-            } else if (action.equals(ActionConstants.ACTION_SCREENSHOT)) {
-                try {
-                    barService.toggleScreenshot();
-                } catch (RemoteException e) {}
+            } else if (action.equals(ActionConstants.ACTION_TORCH)) {
+                // toggle torch the new way
+                TorchManager torchManager =
+                        (TorchManager) context.getSystemService(Context.TORCH_SERVICE);
+                if (!torchManager.isTorchOn()) {
+                    torchManager.setTorchEnabled(true);
+                } else {
+                    torchManager.setTorchEnabled(false);
+                }
                 return;
             } else {
                 // we must have a custom uri
@@ -358,12 +347,6 @@ public class Action {
                 return;
             }
 
-    }
-
-    public static boolean isPieEnabled(Context context) {
-        return Settings.System.getIntForUser(context.getContentResolver(),
-                Settings.System.PIE_CONTROLS,
-                0, UserHandle.USER_CURRENT) == 1;
     }
 
     public static boolean isNavBarEnabled(Context context) {
@@ -415,6 +398,12 @@ public class Action {
             context.startActivityAsUser(intent,
                     new UserHandle(UserHandle.USER_CURRENT));
         }
+    }
+
+    public static boolean isPieEnabled(Context context) {
+        return Settings.System.getIntForUser(context.getContentResolver(),
+                Settings.System.PIE_CONTROLS,
+                0, UserHandle.USER_CURRENT) == 1;
     }
 
     private static void dispatchMediaKeyWithWakeLock(int keycode, Context context) {

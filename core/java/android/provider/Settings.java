@@ -4061,6 +4061,13 @@ public final class Settings {
          */
         public static final String DOZE_PULSE_ON_NOTIFICATIONS = "doze_pulse_on_notifications";
 
+	   /**
+         * Config for advanced power menu
+         *
+         * @hide
+         */
+        public static final String QUICK_TILE_CONFIG = "quick_tile_config";
+
         /**
          * Shake threshold for ambient display
          * @hide

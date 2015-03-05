@@ -58,6 +58,22 @@ public class QSConstants {
     public static final String TILE_USB_TETHER = "usb_tether";
     public static final String TILE_MUSIC = "music";
     public static final String TILE_HEADS_UP = "heads_up";
+    public static final String TILE_REBOOT = "reboot";
+
+    // Order matters
+    protected static final ArrayList<String> TILES_DEFAULT = new ArrayList<String>();
+
+    static {
+        TILES_DEFAULT.add(TILE_WIFI);
+        TILES_DEFAULT.add(TILE_BLUETOOTH);
+        TILES_DEFAULT.add(TILE_CELLULAR);
+        TILES_DEFAULT.add(TILE_AIRPLANE);
+        TILES_DEFAULT.add(TILE_ROTATION);
+        TILES_DEFAULT.add(TILE_FLASHLIGHT);
+        TILES_DEFAULT.add(TILE_LOCATION);
+        TILES_DEFAULT.add(TILE_CAST);
+    }
+>>>>>>> f40bf58... QSTile: Reboot/Recovery tile (1/2)
 
     protected static final ArrayList<String> TILES_AVAILABLE = new ArrayList<String>();
 
@@ -99,5 +115,6 @@ public class QSConstants {
         TILES_AVAILABLE.add(TILE_USB_TETHER);
         TILES_AVAILABLE.add(TILE_MUSIC);
         TILES_AVAILABLE.add(TILE_HEADS_UP);
+        TILES_AVAILABLE.add(TILE_REBOOT);
     }
 }

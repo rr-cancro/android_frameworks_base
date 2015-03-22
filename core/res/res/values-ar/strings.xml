@@ -1783,4 +1783,13 @@
     <item quantity="other" msgid="5408537517529822157">"‏لمدة %d من الساعات"</item>
   </plurals>
     <string name="zen_mode_forever" msgid="4316804956488785559">"إلى أجل غير مسمى"</string>
+<<<<<<< HEAD
+=======
+    <string name="toolbar_collapse_description" msgid="2821479483960330739">"تصغير"</string>
+    <string name="zen_mode_next_alarm_summary" msgid="5915140424683747372">"حتى التنبيه التالي في <xliff:g id="FORMATTEDTIME">%1$s</xliff:g>"</string>
+    <string name="zen_mode_next_alarm_line_one" msgid="5537042951553420916">"حتى التنبيه التالي"</string>
+    <string name="muted_by" msgid="6147073845094180001">"تم كتم الصوت بواسطة <xliff:g id="THIRD_PARTY">%1$s</xliff:g>"</string>
+    <string name="system_error_wipe_data" msgid="6608165524785354962">"حدثت مشكلة داخلية في جهازك، وقد لا يستقر وضعه حتى إجراء إعادة الضبط بحسب بيانات المصنع."</string>
+    <string name="system_error_manufacturer" msgid="8086872414744210668">"حدثت مشكلة داخلية في جهازك. يمكنك الاتصال بالمصنِّع للحصول على تفاصيل."</string>
+>>>>>>> 498b1f7... Remove duplicate resources
 </resources>

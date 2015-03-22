@@ -1783,4 +1783,13 @@
     <item quantity="other" msgid="5408537517529822157">"‏למשך %d שעות"</item>
   </plurals>
     <string name="zen_mode_forever" msgid="4316804956488785559">"ללא הגבלה"</string>
+<<<<<<< HEAD
+=======
+    <string name="toolbar_collapse_description" msgid="2821479483960330739">"כווץ"</string>
+    <string name="zen_mode_next_alarm_summary" msgid="5915140424683747372">"עד ההתראה הבאה ב-<xliff:g id="FORMATTEDTIME">%1$s</xliff:g>"</string>
+    <string name="zen_mode_next_alarm_line_one" msgid="5537042951553420916">"עד ההתראה הבאה"</string>
+    <string name="muted_by" msgid="6147073845094180001">"הושתק על ידי <xliff:g id="THIRD_PARTY">%1$s</xliff:g>"</string>
+    <string name="system_error_wipe_data" msgid="6608165524785354962">"קיימת בעיה פנימית במכשיר שלך, וייתכן שהתפקוד שלו לא יהיה יציב עד שתבצע איפוס לנתוני היצרן."</string>
+    <string name="system_error_manufacturer" msgid="8086872414744210668">"קיימת בעיה פנימית במכשיר שלך. לקבלת פרטים, צור קשר עם היצרן."</string>
+>>>>>>> 498b1f7... Remove duplicate resources
 </resources>

@@ -2031,8 +2031,28 @@
          service state to display signal strength bars -->
     <bool name="config_combined_signal">true</bool>
 
+<<<<<<< HEAD
     <!-- Default value for proximity check on screen wake
          NOTE ! - Enable for devices that have a fast response proximity sensor (ideally < 300ms)
+=======
+    <!-- Whether cpu boost is enabled for both application's 1st launch,subsequent
+         launch and in-app-activity -->
+    <bool name="config_enableCpuBoostForAppLaunch">false</bool>
+    <integer name="launchboost_timeout_param">0</integer>
+    <integer name="launchboost_schedboost_param">0</integer>
+    <integer name="launchboost_cpuboost_param">0</integer>
+    <integer name="launchboost_cpu_6_7_offline_param">0</integer>
+    <integer name="launchboost_pcdisbl_param">0</integer>
+    <integer name="launchboost_ksmboost_param">0</integer>
+
+    <!-- Configuration to play sms ringtone during MO/MT call -->
+    <bool name="config_sms_ringtone_incall">false</bool>
+
+    <!-- Flag indicating whether strict threshold is used, or lenient threshold is used,
+          when evaluating RSRP for LTE antenna bar display
+           0. Strict threshold
+           1. Lenient threshold
+>>>>>>> 498b1f7... Remove duplicate resources
     -->
     <bool name="config_proximityCheckOnWake">false</bool>
     <integer name="config_proximityCheckTimeout">250</integer>

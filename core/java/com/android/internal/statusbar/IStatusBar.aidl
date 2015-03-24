@@ -47,6 +47,7 @@ oneway interface IStatusBar
     void showCustomIntentAfterKeyguard(inout Intent intent);
     void showScreenPinningRequest();
     void setPieTriggerMask(int newMask, boolean lock);
-
+    void toggleLastApp();
+    void toggleKillApp();
 }
 

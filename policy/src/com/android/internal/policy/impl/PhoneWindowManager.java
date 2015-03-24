@@ -5846,10 +5846,12 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             mVolumeUpKeyTriggered = true;
                             mVolumeUpKeyTime = event.getDownTime();
                             mVolumeUpKeyConsumedByScreenshotChord = false;
+                            mVolumeUpKeyConsumedByScreenrecordChord = false;
                             mScreenshotChordVolumeUpKeyTriggered = true;
                             cancelPendingPowerKeyAction();
 			    cancelPendingScreenshotChordAction();
                             interceptScreenshotLog();
+                            interceptScreenrecordChord();
                         }
                     } else {
                         mScreenshotChordVolumeUpKeyTriggered = false;

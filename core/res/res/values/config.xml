@@ -2319,6 +2319,7 @@
     <integer name="config_nightColorTemperature">4500</integer>
     <integer name="config_outdoorAmbientLux">9000</integer>
 
+
     <!-- Boolean to enable the advanced settings switch -->
     <bool name="config_advancedSettingsMode">true</bool>
 
@@ -2326,4 +2327,7 @@
     <string name="config_defaultQuickSettingsTiles">wifi,bt,cell,airplane,rotation,flashlight,location,cast,visualizer,hotspot,live_display</string>
 
     <string-array name="config_externalCMServices"></string-array>
+    <!-- If this is true, key chords can be used to take a screen record on the device. -->
+    <bool name="config_enableScreenrecordChord">true</bool>
+
 </resources>

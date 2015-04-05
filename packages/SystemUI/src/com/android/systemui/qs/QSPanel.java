@@ -743,7 +743,7 @@ public class QSPanel extends ViewGroup {
             mUseFourColumns = Settings.Secure.getIntForUser(
             mContext.getContentResolver(), Settings.Secure.QS_USE_FOUR_COLUMNS,
                 0, UserHandle.USER_CURRENT) == 1;
-            mQSShadeTransparency = Settings.System.getInt(
+            mQSShadeTransparency = Settings.System.getIntForUser(
             mContext.getContentResolver(), Settings.System.QS_TRANSPARENT_SHADE,
                 0, UserHandle.USER_CURRENT) == 1;
         }

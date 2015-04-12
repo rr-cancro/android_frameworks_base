@@ -4203,6 +4203,15 @@ public final class Settings {
         public static final String STATUSBAR_COMPONENT = "statusbar_component";
 
         /**
+         * Status bar power menu
+         * 0 - disabled (default)
+         * 1 - screen off / power menu
+         * 2 - power menu - screen off
+         * @hide
+         */
+        public static final String STATUS_BAR_POWER_MENU = "status_bar_power_menu";
+
+        /**
          * Enable built in CAF task manager
          * @hide
          */

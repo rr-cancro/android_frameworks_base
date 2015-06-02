@@ -95,6 +95,10 @@ public class SignalClusterView
     View mWifiSignalSpacer;
 
     private int mWideTypeIconStartPadding;
+<<<<<<< HEAD
+=======
+    private int mSecondaryTelephonyPadding;
+>>>>>>> c5c2642... SystemUI: use smaller padding for battery
 
     public SignalClusterView(Context context) {
         this(context, null);
@@ -129,6 +133,11 @@ public class SignalClusterView
         super.onFinishInflate();
         mWideTypeIconStartPadding = getContext().getResources().getDimensionPixelSize(
                 R.dimen.wide_type_icon_start_padding);
+<<<<<<< HEAD
+=======
+        mSecondaryTelephonyPadding = getContext().getResources().getDimensionPixelSize(
+                R.dimen.secondary_telephony_padding);
+>>>>>>> c5c2642... SystemUI: use smaller padding for battery
     }
 
     @Override
@@ -393,6 +402,7 @@ public class SignalClusterView
             mWifiSignalSpacer.setVisibility(View.GONE);
         }
 
+<<<<<<< HEAD
         mMobile.setPaddingRelative(mIsMobileTypeIconWide ? mWideTypeIconStartPadding : 0, 0, 0, 0);
 
         if (DEBUG) Log.d(TAG,
@@ -406,6 +416,10 @@ public class SignalClusterView
         } else {
             mMobileType.setVisibility(View.GONE);
         }
+=======
+        mNoSims.setVisibility(mNoSimsVisible ? View.VISIBLE : View.GONE);
+    }
+>>>>>>> c5c2642... SystemUI: use smaller padding for battery
 
         if (mStyle != STATUS_BAR_STYLE_ANDROID_DEFAULT) {
             if (mNoSimIconId != 0) {

@@ -16,6 +16,7 @@
 
 package android.util;
 
+import android.graphics.Bitmap;
 import android.os.SystemProperties;
 
 
@@ -124,16 +125,25 @@ public class DisplayMetrics {
     @Deprecated
     public static int DENSITY_DEVICE;
 
+<<<<<<< HEAD
     /**
      * Allow custom density setting
      * @hide
      */
     public static int DENSITY_CURRENT;
+=======
+    /** @hide */
+    public static int DENSITY_PREFERRED;
+
+    /** @hide */
+    public static int DENSITY_DEVICE_DEFAULT;
+>>>>>>> bb53f32... Density scaling: scale compatibility apps, wm command support
 
     static {
         DENSITY_DEVICE = SystemProperties.getInt("qemu.sf.lcd_density", SystemProperties
             .getInt("ro.sf.lcd_density", DENSITY_DEFAULT));
-        DENSITY_CURRENT = SystemProperties.getInt("persist.sys.lcd_density", DENSITY_DEVICE);
+        DENSITY_DEVICE_DEFAULT = DENSITY_DEVICE;
+        DENSITY_PREFERRED = SystemProperties.getInt("persist.sys.lcd_density", DENSITY_DEVICE);
     }
 
     /**
@@ -225,6 +235,7 @@ public class DisplayMetrics {
      */
     public float noncompatYdpi;
 
+<<<<<<< HEAD
     /**
      * Allow custom density setting
      * @hide
@@ -232,14 +243,18 @@ public class DisplayMetrics {
     public void updateDensity() {
         density = DENSITY_CURRENT / (float) DENSITY_DEFAULT;
         densityDpi = DENSITY_CURRENT;
+=======
+    /** @hide */
+    public void setDensity(int inDensity) {
+        density = inDensity / (float) DENSITY_DEFAULT;
+        densityDpi = inDensity;
+>>>>>>> bb53f32... Density scaling: scale compatibility apps, wm command support
         scaledDensity = density;
-        xdpi = DENSITY_CURRENT;
-        ydpi = DENSITY_CURRENT;
-        noncompatDensity = density;
-        noncompatDensityDpi = densityDpi;
-        noncompatScaledDensity = scaledDensity;
-        noncompatXdpi = xdpi;
-        noncompatYdpi = ydpi;
+        xdpi = inDensity;
+        ydpi = inDensity;
+
+        DENSITY_DEVICE = inDensity;
+        Bitmap.setDefaultDensity(inDensity);
     }
 
     public DisplayMetrics() {
@@ -333,6 +348,7 @@ public class DisplayMetrics {
             ", height=" + heightPixels + ", scaledDensity=" + scaledDensity +
             ", xdpi=" + xdpi + ", ydpi=" + ydpi + "}";
     }
+<<<<<<< HEAD
     
     /**
      * Allow custom density setting
@@ -341,4 +357,6 @@ public class DisplayMetrics {
     public static int getDeviceDensity() {
         return DENSITY_CURRENT;
     }
+=======
+>>>>>>> bb53f32... Density scaling: scale compatibility apps, wm command support
 }

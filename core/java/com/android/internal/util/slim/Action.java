@@ -100,12 +100,6 @@ public class Action {
             } else if (action.equals(ActionConstants.ACTION_SEARCH)) {
                 triggerVirtualKeypress(KeyEvent.KEYCODE_SEARCH, isLongpress);
                 return;
-            } else if (action.equals(ActionConstants.ACTION_KILL)) {
-                if (isKeyguardShowing) return;
-                try {
-                    barService.toggleKillApp();
-                } catch (RemoteException e) {}
-                return;
             } else if (action.equals(ActionConstants.ACTION_NOTIFICATIONS)) {
                 if (isKeyguardShowing && isKeyguardSecure) {
                     return;
@@ -122,28 +116,11 @@ public class Action {
                 try {
                     barService.expandSettingsPanel();
                 } catch (RemoteException e) {}
-            } else if (action.equals(ActionConstants.ACTION_LAST_APP)) {
-                if (isKeyguardShowing) {
-                    return;
-                }
-                try {
-                    barService.toggleLastApp();
-                } catch (RemoteException e) {
-                }
-                return;
             } else if (action.equals(ActionConstants.ACTION_TORCH)) {
                 try {
                     ITorchService torchService = ITorchService.Stub.asInterface(
                             ServiceManager.getService(Context.TORCH_SERVICE));
                     torchService.toggleTorch();
-                } catch (RemoteException e) {
-                }
-                return;
-            } else if (action.equals(ActionConstants.ACTION_POWER_MENU)) {
-                try {
-                    //IWindowManager windowManagerService = IWindowManager.Stub.asInterface(
-                    //ServiceManager.getService(Context.WINDOW_SERVICE));
-                    windowManagerService.toggleGlobalMenu();
                 } catch (RemoteException e) {
                 }
                 return;
@@ -200,30 +177,6 @@ public class Action {
                         context.getContentResolver(),
                         Settings.System.NAVIGATION_BAR_SHOW,
                         navBarState ? 0 : 1, UserHandle.USER_CURRENT);
-                return;
-            } else if (action.equals(ActionConstants.ACTION_KILL)) {
-                if (isKeyguardShowing) {
-                    return;
-                }
-                try {
-                    barService.toggleKillApp();
-                } catch (RemoteException e) {
-                }
-                return;
-            } else if (action.equals(ActionConstants.ACTION_LAST_APP)) {
-                if (isKeyguardShowing) {
-                    return;
-                }
-                try {
-                    barService.toggleLastApp();
-                } catch (RemoteException e) {
-                }
-                return;
-            } else if (action.equals(ActionConstants.ACTION_SCREENSHOT)) {
-                try {
-                    barService.toggleScreenshot();
-                } catch (RemoteException e) {
-                }
                 return;
             } else if (action.equals(ActionConstants.ACTION_RECENTS)) {
                 if (isKeyguardShowing) {
@@ -339,11 +292,6 @@ public class Action {
                 if (!powerManager.isScreenOn()) {
                     powerManager.wakeUp(SystemClock.uptimeMillis());
                 }
-                return;
-            } else if (action.equals(ActionConstants.ACTION_SCREENSHOT)) {
-                try {
-                    barService.toggleScreenshot();
-                } catch (RemoteException e) {}
                 return;
             } else {
                 // we must have a custom uri

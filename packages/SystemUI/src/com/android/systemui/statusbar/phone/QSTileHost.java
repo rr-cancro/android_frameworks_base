@@ -67,6 +67,7 @@ import com.android.systemui.qs.tiles.PerfProfileTile;
 import com.android.systemui.qs.tiles.RebootTile;
 import com.android.systemui.qs.tiles.RoamingTile;
 import com.android.systemui.qs.tiles.RotationLockTile;
+import com.android.systemui.qs.tiles.SlimActionTile;
 import com.android.systemui.qs.tiles.SystemUIRestartTile;
 import com.android.systemui.qs.tiles.UsbTetherTile;
 import com.android.systemui.qs.tiles.VisualizerTile;

@@ -920,11 +920,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         observer.observe();
 
         // Lastly, call to the icon policy to install/update all the icons.
-<<<<<<< HEAD
-        mIconPolicy = new PhoneStatusBarPolicy(mContext, mCastController, mSuController);
-=======
-        mIconPolicy = new PhoneStatusBarPolicy(mContext, mCastController, mHotspotController);
->>>>>>> e9ac55d... Add hotspot icon to status bar
+        mIconPolicy = new PhoneStatusBarPolicy(mContext, mCastController, mSuController, mHotspotController);
+
         mSettingsObserver.onChange(false); // set up
 
         mHeadsUpObserver.onChange(true); // set up

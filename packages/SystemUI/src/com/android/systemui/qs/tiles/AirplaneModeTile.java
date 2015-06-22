@@ -66,7 +66,6 @@ public class AirplaneModeTile extends QSTile<QSTile.BooleanState> {
         if (!mQSCSwitch) {
             mEnable.setAllowAnimation(true);
             mDisable.setAllowAnimation(true);
-            qsCollapsePanel();
         }
     }
 

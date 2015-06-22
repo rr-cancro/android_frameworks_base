@@ -93,7 +93,6 @@ public class ColorInversionTile extends QSTile<QSTile.BooleanState> {
         if (!mQSCSwitch) {
             mEnable.setAllowAnimation(true);
             mDisable.setAllowAnimation(true);
-            qsCollapsePanel();
         }
     }
 

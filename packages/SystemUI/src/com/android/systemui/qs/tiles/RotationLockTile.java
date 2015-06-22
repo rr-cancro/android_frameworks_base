@@ -163,3 +163,6 @@ public class RotationLockTile extends QSTile<QSTile.BooleanState> {
         public void onRotationLockStateChanged(boolean rotationLocked, boolean affordanceVisible) {
             refreshState(rotationLocked ? UserBoolean.BACKGROUND_TRUE
                     : UserBoolean.BACKGROUND_FALSE);
+        }
+    };
+}

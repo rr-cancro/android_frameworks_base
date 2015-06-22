@@ -29,20 +29,6 @@ import com.android.systemui.statusbar.policy.RotationLockController.RotationLock
 
 /** Quick settings tile: Rotation **/
 public class RotationLockTile extends QSTile<QSTile.BooleanState> {
-<<<<<<< HEAD
-    private static final Intent DISPLAY_SETTINGS = new Intent(Settings.ACTION_DISPLAY_SETTINGS);
-    private static final Intent DISPLAY_ROTATION_SETTINGS =
-            new Intent("android.settings.DISPLAY_ROTATION_SETTINGS");
-
-//    private final AnimationIcon mPortraitToAuto
-//            = new AnimationIcon(R.drawable.ic_portrait_to_auto_rotate_animation);
-//    private final AnimationIcon mAutoToPortrait
-//            = new AnimationIcon(R.drawable.ic_portrait_from_auto_rotate_animation);
-//    private final AnimationIcon mLandscapeToAuto
-//            = new AnimationIcon(R.drawable.ic_landscape_to_auto_rotate_animation);
-//    private final AnimationIcon mAutoToLandscape
-//            = new AnimationIcon(R.drawable.ic_landscape_from_auto_rotate_animation);
-=======
     private final AnimationIcon mPortraitToAuto
             = new AnimationIcon(R.drawable.ic_portrait_to_auto_rotate_animation);
     private final AnimationIcon mAutoToPortrait
@@ -52,18 +38,13 @@ public class RotationLockTile extends QSTile<QSTile.BooleanState> {
             = new AnimationIcon(R.drawable.ic_landscape_to_auto_rotate_animation);
     private final AnimationIcon mAutoToLandscape
             = new AnimationIcon(R.drawable.ic_landscape_from_auto_rotate_animation);
->>>>>>> 14390bd... Tile icon animation to the masses (switch)
 
+    Intent intent = new Intent(Intent.ACTION_MAIN);
     private final RotationLockController mController;
-
-    private final boolean mAdvancedMode;
 
     public RotationLockTile(Host host) {
         super(host);
         mController = host.getRotationLockController();
-
-        mAdvancedMode = Settings.Secure.getInt(mContext.getContentResolver(),
-                Settings.Secure.ADVANCED_MODE, 1) == 1;
     }
 
     @Override
@@ -90,20 +71,16 @@ public class RotationLockTile extends QSTile<QSTile.BooleanState> {
 
     @Override
     protected void handleSecondaryClick() {
-        if (!mAdvancedMode) {
-            mHost.startSettingsActivity(DISPLAY_SETTINGS);
-        } else {
-            mHost.startSettingsActivity(DISPLAY_ROTATION_SETTINGS);
-        }
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$DisplayRotationSettingsActivity");
+        mHost.startSettingsActivity(intent);
     }
 
     @Override
     protected void handleLongClick() {
-        if (!mAdvancedMode) {
-            mHost.startSettingsActivity(DISPLAY_SETTINGS);
-        } else {
-            mHost.startSettingsActivity(DISPLAY_ROTATION_SETTINGS);
-        }
+        intent.setClassName("com.android.settings",
+            "com.android.settings.Settings$DisplayRotationSettingsActivity");
+        mHost.startSettingsActivity(intent);
     }
 
     @Override
@@ -186,6 +163,3 @@ public class RotationLockTile extends QSTile<QSTile.BooleanState> {
         public void onRotationLockStateChanged(boolean rotationLocked, boolean affordanceVisible) {
             refreshState(rotationLocked ? UserBoolean.BACKGROUND_TRUE
                     : UserBoolean.BACKGROUND_FALSE);
-        }
-    };
-}

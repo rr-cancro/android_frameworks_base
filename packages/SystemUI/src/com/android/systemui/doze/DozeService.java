@@ -137,14 +137,15 @@ public class DozeService extends DreamService implements ProximitySensorManager.
         setWindowless(true);
 
         mSensors = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-        mSigMotionSensor = new TriggerSensor(Sensor.TYPE_SIGNIFICANT_MOTION,
-                mDozeParameters.getPulseOnSigMotion(), mDozeParameters.getVibrateOnSigMotion(),
-                DozeLog.PULSE_REASON_SENSOR_SIGMOTION);
-        mPickupSensor = new TriggerSensor(Sensor.TYPE_PICK_UP_GESTURE,
-                mDozeParameters.getPulseOnPickup(), mDozeParameters.getVibrateOnPickup(),
-                DozeLog.PULSE_REASON_SENSOR_PICKUP);
         mUseAccelerometer = mDozeParameters.setUsingAccelerometerAsSensorPickUp();
-        if (mUseAccelerometer) {
+        if (!mUseAccelerometer) {
+            mSigMotionSensor = new TriggerSensor(Sensor.TYPE_SIGNIFICANT_MOTION,
+                    mDozeParameters.getPulseOnSigMotion(), mDozeParameters.getVibrateOnSigMotion(),
+                    DozeLog.PULSE_REASON_SENSOR_SIGMOTION);
+            mPickupSensor = new TriggerSensor(Sensor.TYPE_PICK_UP_GESTURE,
+                    mDozeParameters.getPulseOnPickup(), mDozeParameters.getVibrateOnPickup(),
+                    DozeLog.PULSE_REASON_SENSOR_PICKUP);
+        } else {
             mProximitySensorManager = new ProximitySensorManager(mContext, this);
             mShakeSensorManager = new ShakeSensorManager(mContext, this);
         }
@@ -302,8 +303,7 @@ public class DozeService extends DreamService implements ProximitySensorManager.
             // Here we need a wakelock to stay awake until the pulse is finished.
             mWakeLock.acquire();
             mPulsing = true;
-            if (!mDozeParameters.getProxCheckBeforePulse() ||
-                    reason == DozeLog.PULSE_REASON_INTENT) {
+            if (!mDozeParameters.getProxCheckBeforePulse(reason)) {
                 // skip proximity check
                 continuePulsing(reason);
                 return;
@@ -475,7 +475,7 @@ public class DozeService extends DreamService implements ProximitySensorManager.
             if (DEBUG) Log.d(mTag, "No more schedule resets remaining");
             return;
         }
-        final long pulseDuration = mDozeParameters.getPulseDuration(false /*pickup*/);
+        final long pulseDuration = mDozeParameters.getPulseDuration(DozeLog.PULSE_REASON_NOTIFICATION);
         if ((notificationTimeMs - mNotificationPulseTime) < pulseDuration) {
             if (DEBUG) Log.d(mTag, "Recently updated, not resetting schedule");
             return;

@@ -37,10 +37,6 @@
         android:layout_height="14.5dp"
         android:layout_width="9.5dp"
         android:layout_marginBottom="@dimen/battery_margin_bottom"
-<<<<<<< HEAD
         android:layout_marginStart="@dimen/signal_cluster_battery_padding"/>
-=======
-        android:layout_marginStart="@dimen/signal_cluster_battery_padding" />
->>>>>>> c5c2642... SystemUI: use smaller padding for battery
 
 </LinearLayout>

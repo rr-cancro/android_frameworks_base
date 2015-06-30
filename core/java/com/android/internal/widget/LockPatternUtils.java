@@ -561,7 +561,7 @@ public class LockPatternUtils {
                 userHandle);
         setLockPatternEnabled(false, userHandle);
         saveLockGesture(null);
-        setLockGestureEnabled(false, userHandle);
+        setLockGestureEnabled(false);
         saveLockPattern(null, isFallback, false, userHandle);
         setLong(PASSWORD_TYPE_KEY, DevicePolicyManager.PASSWORD_QUALITY_UNSPECIFIED, userHandle);
         setLong(PASSWORD_TYPE_ALTERNATE_KEY, DevicePolicyManager.PASSWORD_QUALITY_UNSPECIFIED,

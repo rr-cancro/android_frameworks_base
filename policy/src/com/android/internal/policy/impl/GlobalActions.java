@@ -323,8 +323,8 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mItems.add(new RebootAction());
             } else if (GLOBAL_ACTION_KEY_SCREENSHOT.equals(actionKey)) {
                 mItems.add(getScreenshotAction());
-            } else if (GLOBAL_ACTION_KEY_SCREENRECORD.equals(actionKey)) {
-                mItems.add(getScreenrecordAction());		
+	    } else if (GLOBAL_ACTION_KEY_SCREENRECORD.equals(actionKey)) {
+                mItems.add(getScreenrecordAction());
             } else if (GLOBAL_ACTION_KEY_AIRPLANE.equals(actionKey)) {
                 mItems.add(mAirplaneModeOn);
             } else if (GLOBAL_ACTION_KEY_BUGREPORT.equals(actionKey)) {
@@ -567,6 +567,24 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         };
     }
+ 
+    private Action getScreenrecordAction() {
+        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_screenrecord,
+                R.string.global_action_screenrecord) {
+
+            public void onPress() {
+                takeScreenrecord();
+            }
+
+            public boolean showDuringKeyguard() {
+                return true;
+            }
+
+            public boolean showBeforeProvisioning() {
+                return false;
+            }
+        };
+    }
 
     private Action getTorchToggleAction() {
         return new SinglePressAction(com.android.internal.R.drawable.ic_lock_torch,
@@ -583,14 +601,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 }
                 return;
             }
-    private Action getScreenrecordAction() {
-        return new SinglePressAction(com.android.internal.R.drawable.ic_lock_screenrecord,
-                R.string.global_action_screenrecord) {
-
-            public void onPress() {
-                takeScreenrecord();
-
-}
 
             public boolean showDuringKeyguard() {
                 return true;
@@ -853,7 +863,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-  /**
+    /**
      * functions needed for taking screen record.
      */
     final Object mScreenrecordLock = new Object();

@@ -1922,11 +1922,7 @@
     <string-array translatable="false" name="config_globalActionsList">
         <item>power</item>
        <!-- <item>torch</item> -->
-        <item>bugreport</item>
-
-    <string-array translatable="false" name="config_globalActionsList">
-        <item>power</item>
-       <!-- <item>torch</item> -->
+	<item>screenrecord</item>
         <item>bugreport</item>
         <item>users</item>
     </string-array>

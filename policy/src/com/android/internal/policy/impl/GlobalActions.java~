@@ -324,7 +324,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             } else if (GLOBAL_ACTION_KEY_SCREENSHOT.equals(actionKey)) {
                 mItems.add(getScreenshotAction());
             } else if (GLOBAL_ACTION_KEY_SCREENRECORD.equals(actionKey)) {
-                mItems.add(getScreenrecordAction());		
+                mItems.add(getScreenrecordAction());
             } else if (GLOBAL_ACTION_KEY_AIRPLANE.equals(actionKey)) {
                 mItems.add(mAirplaneModeOn);
             } else if (GLOBAL_ACTION_KEY_BUGREPORT.equals(actionKey)) {
@@ -582,15 +582,13 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     torchManager.setTorchEnabled(false);
                 }
                 return;
-            }
     private Action getScreenrecordAction() {
         return new SinglePressAction(com.android.internal.R.drawable.ic_lock_screenrecord,
                 R.string.global_action_screenrecord) {
 
             public void onPress() {
                 takeScreenrecord();
-
-}
+            }
 
             public boolean showDuringKeyguard() {
                 return true;
@@ -853,7 +851,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-  /**
+    /**
      * functions needed for taking screen record.
      */
     final Object mScreenrecordLock = new Object();
@@ -916,6 +914,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         }
     }
+
     private void prepareDialog() {
         mAirplaneModeOn.updateState(mAirplaneState);
         mAdapter.notifyDataSetChanged();

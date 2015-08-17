@@ -3804,6 +3804,16 @@ public final class Settings {
          */
         public static final String VOLUME_PANEL_TIMEOUT = "volume_panel_timeout";
 
+<<<<<<< HEAD
+=======
+        /**
+         * Three Finger Gesture from Oppo
+         *
+         * @hide
+         */
+        public static final String THREE_FINGER_GESTURE = "three_finger_gesture";
+       
+>>>>>>> parent of dda7f1a... Revert "my bad guys..all good now..forgot was working on other stuff..lol"
         /**
          * Whether to show the weather info on the lock screen
          * @hide

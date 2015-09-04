@@ -3001,6 +3001,21 @@ public final class Settings {
         public static final String SHOW_WEB_SUGGESTIONS = "show_web_suggestions";
 
         /**
+         * Contains the notifications light maximum brightness to use.
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_BRIGHTNESS_LEVEL =
+                "notification_light_brightness_level";
+
+        /**
+         * Whether to allow notifications with the screen on or DayDreams.
+         * The value is boolean (1 or 0). Default will always be false.
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_SCREEN_ON =
+                "notification_light_screen_on_enable";
+
+        /**
          * Whether the notification LED should repeatedly flash when a notification is
          * pending. The value is boolean (1 or 0).
          * @hide
@@ -3600,21 +3615,6 @@ public final class Settings {
          */
         public static final String KEY_ASSIST_ACTION = "key_assist_action";
 
-
-        /**
-         * Shake to clean recents app screen
-         * @hide
-         *
-         */
-        public static final String SHAKE_TO_CLEAN_RECENTS = "shake_to_clean_recents";
-
-        /**
-         * Shake to clean notifications
-         * @hide
-         *
-         */
-        public static final String SHAKE_TO_CLEAN_NOTIFICATIONS = "shake_to_clean_notifications";
-
         /**
          * Action to perform when the assistant (search) key is long-pressed. (Default is 4)
          * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
@@ -3741,6 +3741,7 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_SHOW_WEATHER_TEMP = "status_bar_show_weather_temp";
+
         /**
          * Style of Weather Temp
          * 0 - Right (default)
@@ -3748,16 +3749,25 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_WEATHER_TEMP_STYLE = "status_bar_weather_temp_style";
+
         /**
          * Statusbar weather color setting
          * @hide
          */
         public static final String STATUS_BAR_WEATHER_COLOR = "status_bar_weather_color";
+
         /**
          * Statusbar weather font size setting
          * @hide
          */
         public static final String STATUS_BAR_WEATHER_SIZE = "status_bar_weather_size";
+
+        /**
+         * Statusbar weather font style setting
+         * @hide
+         */
+        public static final String STATUS_BAR_WEATHER_FONT_STYLE = "status_bar_weather_font_style";
+
         /**
          * Visibility of SIM icons of unpopulated SIM slots in MSIM mode
          * 0: Hide unpopulated SIM icons
@@ -4169,8 +4179,13 @@ public final class Settings {
         /** @hide */ public static final int HEADS_UP_USER_ON = 1;
 
         /**
+         * Toast icon
+         *
+         * @hide
+         */
+        public static final String TOAST_ICON = "toast_icon";
 
-         
+        /**
          * volume answer.
          * @hide
          */
@@ -4379,6 +4394,14 @@ public final class Settings {
          */
         public static final String STATUS_BAR_LOGO = "status_bar_logo";
  
+         /**
+         * Style of Status bar logo
+         * 0 - Left (default)
+         * 1 - Right
+         * @hide
+         */
+        public static final String STATUS_BAR_LOGO_STYLE = "status_bar_logo_style";
+
          /**
          * Statusbar logo color setting
          * @hide
@@ -4721,6 +4744,66 @@ public final class Settings {
         public static final String SHOW_HEADSET_ICON = "show_headset_icon";
 
         /**
+         * Whether to use the proximity sensor to turn the screen on/off during a call
+         * @hide
+         */
+        public static final String IN_CALL_PROXIMITY_SENSOR = "in_call_proximity_sensor";
+
+        /**
+         * Whether to use the custom status bar header or not
+         * @hide
+         */
+        public static final String STATUS_BAR_CUSTOM_HEADER = "status_bar_custom_header";
+
+        /**
+         * Current active provider
+         * @hide
+         */
+        public static final String STATUS_BAR_CUSTOM_HEADER_PROVIDER = "status_bar_custom_header_provider";
+
+         /**
+         * Change the color of the lockscreen bottom camera shortcut
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_CAMERA_ICON_COLOR = "lockscreen_camera_icon_color";
+
+        /**
+         * Change the color of the lockscreen bottom phone shortcut
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_PHONE_ICON_COLOR = "lockscreen_phone_icon_color";
+
+        /**
+         * Change the color of the lockscreen lock icon
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_LOCK_ICON_COLOR = "lockscreen_lock_icon_color";
+
+        /**
+         * Change the color of the lockscreen indication text
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_INDICATION_TEXT_COLOR = "lockscreen_indication_text_color";
+
+        /**
+         * Change the color of the lockscreen clock
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_CLOCK_COLOR = "lockscreen_clock_color";
+
+        /**
+         * Change the color of the lockscreen date underneath the clock
+         *
+         * @hide
+         */
+        public static final String LOCKSCREEN_CLOCK_DATE_COLOR = "lockscreen_clock_date_color";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -4805,7 +4888,9 @@ public final class Settings {
             DISPLAY_AUTO_OUTDOOR_MODE,
             LIVE_DISPLAY_HINTED,
             NONE_IS_SILENT,
-            ALLOW_LIGHTS
+            ALLOW_LIGHTS,
+            NOTIFICATION_LIGHT_BRIGHTNESS_LEVEL,
+            NOTIFICATION_LIGHT_SCREEN_ON
         };
 
         /**
@@ -4828,16 +4913,6 @@ public final class Settings {
          * @hide
          */
         public static final String WHEN_TO_MAKE_WIFI_CALLS = "when_to_make_wifi_calls";
-
-        /**
-         * Settings to reset on user request. They will fall back to their default value (0).
-         *
-         * @hide
-         */
-        public static final String[] SETTINGS_TO_RESET = {
-            SHAKE_TO_CLEAN_RECENTS,
-            SHAKE_TO_CLEAN_NOTIFICATIONS
-         };
 
         // Settings moved to Settings.Secure
 
@@ -5995,6 +6070,12 @@ public final class Settings {
          */
         public static final String TRUST_AGENTS_INITIALIZED =
                 "trust_agents_initialized";
+
+        /**
+         * Chamber on / off (custom setting shortcuts)
+         * @hide
+         */
+        public static final String CHAMBER_OF_SECRETS = "chamber_of_secrets";
 
         /**
          * The Logging ID (a unique 64-bit value) as a hex string.
@@ -7317,11 +7398,20 @@ public final class Settings {
         public static final String LIVE_DISPLAY_COLOR_MATRIX = "live_display_color_matrix";
 
         /**
-         * Whether to show the lockscreen visualizer.
-         * 0 will disable it, anything else will enable it. Default is on.
+         * Whether to show the keyguard visualizer.
+         * Boolean setting. 0 = no, 1 = yes.
          * @hide
          */
         public static final String LOCKSCREEN_VISUALIZER_ENABLED = "lockscreen_visualizer";
+
+        /**
+         * Whether to show quick settings tiles with sensitive data in secure lockscreens.
+         * 0 will ignore the sensitive data flag, anything else will take care of that
+         * flag. Default is off.
+         * @hide
+         */
+        public static final String LOCKSCREEN_HIDE_TILES_WITH_SENSITIVE_DATA =
+                "lockscreen_hide_qs_tiles_with_sensitive_data";
 
         /**
          * This are the settings to be backed up.

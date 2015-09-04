@@ -123,7 +123,7 @@
     <!-- Weather -->
     <uses-permission android:name="com.cyanogenmod.lockclock.permission.READ_WEATHER" />
 
-    <!-- Visualizer tile -->
+    <!-- Visualizer -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -233,7 +233,7 @@
 
         <activity android:name=".recent.RecentsActivity"
                 android:label="@string/accessibility_desc_recent_apps"
-                android:theme="@style/RecentsTheme.Wallpaper"
+                android:theme="@style/RecentsStyle"
                 android:excludeFromRecents="true"
                 android:launchMode="singleInstance"
                 android:resumeWhilePausing="true"
@@ -489,6 +489,20 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SHOW_BRIGHTNESS_DIALOG" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".settings.NotificationBrightnessDialog"
+            android:label="@string/quick_settings_brightness_dialog_title"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog"
+            android:finishOnCloseSystemDialogs="true"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SHOW_NOTIFICATION_BRIGHTNESS_DIALOG" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

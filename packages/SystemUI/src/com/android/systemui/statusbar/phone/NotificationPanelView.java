@@ -722,9 +722,6 @@ public class NotificationPanelView extends PanelView implements
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-            mStatusBar.setVisualizerTouching(false);
-        }
         if (mBlockTouches) {
             return false;
         }
@@ -777,6 +774,7 @@ public class NotificationPanelView extends PanelView implements
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN && mExpandedHeight == 0
                 && mQsExpansionEnabled) {
             mTwoFingerQsExpandPossible = true;
+            resetQsPanelVisibility();
         }
         boolean twoFingerQsEvent = mTwoFingerQsExpandPossible
                 && (event.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN
@@ -973,7 +971,6 @@ public class NotificationPanelView extends PanelView implements
     }
 
     private void setQsExpanded(boolean expanded) {
-        mStatusBar.setVisualizerAnimating(expanded);
         boolean changed = mQsExpanded != expanded;
         if (changed) {
             mQsExpanded = expanded;
@@ -1236,6 +1233,7 @@ public class NotificationPanelView extends PanelView implements
         updateNotificationScrim(height);
         if (mKeyguardShowing) {
             updateHeaderKeyguard();
+            resetQsPanelVisibility();
         }
         if (mStatusBarState == StatusBarState.SHADE && mQsExpanded
                 && !mStackScrollerOverscrolling && mQsScrimEnabled) {
@@ -1440,8 +1438,13 @@ public class NotificationPanelView extends PanelView implements
             mQsPanel.setVisibility(expandVisually && !mTaskManagerShowing
                     ? View.VISIBLE : View.GONE);
             mTaskManagerPanel.setVisibility(expandVisually && mTaskManagerShowing
-                    ? View.VISIBLE : View.GONE);
+                    && !mKeyguardShowing ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private void resetQsPanelVisibility() {
+        mQsPanel.setVisibility(View.VISIBLE);
+        mTaskManagerPanel.setVisibility(View.GONE);
     }
 
     @Override
@@ -1673,7 +1676,9 @@ public class NotificationPanelView extends PanelView implements
         float alphaQsExpansion = 1 - Math.min(1, getQsExpansionFraction() * 2);
         mKeyguardStatusBar.setAlpha(Math.min(alphaNotifications, alphaQsExpansion)
                 * mKeyguardStatusBarAnimateAlpha);
-        mKeyguardBottomArea.setAlpha(Math.min(1 - getQsExpansionFraction(), alphaNotifications));
+        float alphaBottomArea = Math.min(1 - getQsExpansionFraction(), alphaNotifications);
+        mKeyguardBottomArea.setAlpha(alphaBottomArea);
+        mStatusBar.setVisualizerAlpha(alphaBottomArea);
         setQsTranslation(mQsExpansionHeight);
     }
 
@@ -1874,14 +1879,12 @@ public class NotificationPanelView extends PanelView implements
                 || isDozing()) {
             return;
         }
-        mStatusBar.setVisualizerAnimating(true);
         mHintAnimationRunning = true;
         mAfforanceHelper.startHintAnimation(right, new Runnable() {
             @Override
             public void run() {
                 mHintAnimationRunning = false;
                 mStatusBar.onHintFinished();
-                mStatusBar.setVisualizerAnimating(false);
             }
         });
         boolean start = getLayoutDirection() == LAYOUT_DIRECTION_RTL ? right : !right;

@@ -106,6 +106,7 @@ import com.android.internal.util.cm.SpamFilter;
 import com.android.internal.util.cm.SpamFilter.SpamContract.NotificationTable;
 import com.android.internal.util.cm.SpamFilter.SpamContract.PackageTable;
 import com.android.internal.util.NotificationColorUtil;
+import com.android.internal.util.omni.OmniSwitchConstants;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.systemui.R;
 import com.android.systemui.RecentsComponent;
@@ -183,7 +184,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     private static final Uri SPAM_MESSAGE_URI = new Uri.Builder()
            .scheme(ContentResolver.SCHEME_CONTENT)
             .authority(SpamMessageProvider.AUTHORITY)
-            .appendPath("message")
+            .appendPath("messages")
             .build();
 
     protected CommandQueue mCommandQueue;
@@ -569,7 +570,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         public void onNotificationPosted(final StatusBarNotification sbn,
                 final RankingMap rankingMap) {
             if (DEBUG) Log.d(TAG, "onNotificationPosted: " + sbn);
-            mHandler.post(new Runnable() {
+            final Runnable notificationPost = new Runnable() {
                 @Override
                 public void run() {
                     Notification n = sbn.getNotification();
@@ -599,7 +600,12 @@ public abstract class BaseStatusBar extends SystemUI implements
                         addNotification(sbn, rankingMap);
                     }
                 }
-            });
+            };
+            if (TextUtils.equals(sbn.getNotification().category, Notification.CATEGORY_CALL)) {
+                mHandler.postAtFrontOfQueue(notificationPost);
+            } else {
+                mHandler.post(notificationPost);
+            }
         }
 
         @Override
@@ -1107,12 +1113,17 @@ public abstract class BaseStatusBar extends SystemUI implements
             filterButton.setVisibility(View.VISIBLE);
             filterButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    ContentValues values = new ContentValues();
-                    String message = SpamFilter.getNotificationContent(
-                    sbn.getNotification());
-                    values.put(NotificationTable.MESSAGE_TEXT, message);
-                    values.put(PackageTable.PACKAGE_NAME, pkg);
-                    mContext.getContentResolver().insert(SPAM_MESSAGE_URI, values);
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            ContentValues values = new ContentValues();
+                            String message = SpamFilter.getNotificationContent(
+                                    sbn.getNotification());
+                            values.put(NotificationTable.MESSAGE_TEXT, message);
+                            values.put(PackageTable.PACKAGE_NAME, pkg);
+                            mContext.getContentResolver().insert(SPAM_MESSAGE_URI, values);
+                        }
+                    });
                     removeNotification(sbn.getKey(), null);
                     onNotificationClear(sbn);
                 }
@@ -1368,52 +1379,83 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     /** Proxy for RecentsComponent */
 
+    private boolean isOmniSwitchEnabled() {
+        int settingsValue = Settings.System.getIntForUser(
+                mContext.getContentResolver(), Settings.System.RECENTS_USE_OMNISWITCH, 0
+                , UserHandle.USER_CURRENT);
+        return (settingsValue == 1);
+    }
+
     protected void showRecents(boolean triggeredFromAltTab) {
-        if (mRecents != null) {
-            sendCloseSystemWindows(mContext, SYSTEM_DIALOG_REASON_RECENT_APPS);
-            mRecents.showRecents(triggeredFromAltTab, getStatusBarView());
+        if (isOmniSwitchEnabled()) {
+            Intent showIntent = new Intent(OmniSwitchConstants.ACTION_SHOW_OVERLAY);
+            mContext.sendBroadcastAsUser(showIntent, UserHandle.CURRENT);
+        } else {
+            if (mRecents != null) {
+                sendCloseSystemWindows(mContext, SYSTEM_DIALOG_REASON_RECENT_APPS);
+                mRecents.showRecents(triggeredFromAltTab, getStatusBarView());
+            }
         }
     }
 
     protected void hideRecents(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
-        if (mRecents != null) {
-            mRecents.hideRecents(triggeredFromAltTab, triggeredFromHomeKey);
-            } else if (mSlimRecents != null) {
+        if (mSlimRecents != null) {
                 mSlimRecents.hideRecents(triggeredFromHomeKey);            
-        }
+   		 }
+        else if (isOmniSwitchEnabled()) {
+            Intent showIntent = new Intent(OmniSwitchConstants.ACTION_HIDE_OVERLAY);
+            mContext.sendBroadcastAsUser(showIntent, UserHandle.CURRENT);
+        } else {
+            if (mRecents != null) {
+                mRecents.hideRecents(triggeredFromAltTab, triggeredFromHomeKey);
+            }  
     }
-
+}
     protected void toggleRecents() {
-        if (mRecents != null) {
-            sendCloseSystemWindows(mContext, SYSTEM_DIALOG_REASON_RECENT_APPS);
-            mRecents.toggleRecents(mDisplay, mLayoutDirection, getStatusBarView());
-            } else if (mSlimRecents != null) {
+	if (mSlimRecents != null) {
             sendCloseSystemWindows(mContext, SYSTEM_DIALOG_REASON_RECENT_APPS);
             mSlimRecents.toggleRecents(mDisplay, mLayoutDirection, getStatusBarView());
+		}
+        else if (isOmniSwitchEnabled()) {
+            Intent showIntent = new Intent(OmniSwitchConstants.ACTION_TOGGLE_OVERLAY);
+            mContext.sendBroadcastAsUser(showIntent, UserHandle.CURRENT);
+        } else {
+            if (mRecents != null) {
+                sendCloseSystemWindows(mContext, SYSTEM_DIALOG_REASON_RECENT_APPS);
+                mRecents.toggleRecents(mDisplay, mLayoutDirection, getStatusBarView());
+            }
         }
     }
 
     protected void preloadRecents() {
-        if (mRecents != null) {
-            mRecents.preloadRecents();
+        if (!isOmniSwitchEnabled()) {
+            if (mRecents != null) {
+                mRecents.preloadRecents();
+            }
         }
     }
 
     protected void cancelPreloadingRecents() {
-        if (mRecents != null) {
-            mRecents.cancelPreloadingRecents();
+        if (!isOmniSwitchEnabled()) {
+            if (mRecents != null) {
+                mRecents.cancelPreloadingRecents();
+            }
         }
     }
 
     protected void showRecentsNextAffiliatedTask() {
-        if (mRecents != null) {
-            mRecents.showNextAffiliatedTask();
+        if (!isOmniSwitchEnabled()) {
+            if (mRecents != null) {
+                mRecents.showNextAffiliatedTask();
+            }
         }
     }
 
     protected void showRecentsPreviousAffiliatedTask() {
-        if (mRecents != null) {
-            mRecents.showPrevAffiliatedTask();
+        if (!isOmniSwitchEnabled()) {
+            if (mRecents != null) {
+                mRecents.showPrevAffiliatedTask();
+            }
         }
     }
 
@@ -1445,7 +1487,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     public abstract void resetHeadsUpDecayTimer();
 
-    public abstract void scheduleHeadsUpOpen();
+    public abstract void scheduleHeadsUpOpen(boolean immediate);
 
     public abstract void scheduleHeadsUpClose();
 
@@ -2920,3 +2962,4 @@ public abstract class BaseStatusBar extends SystemUI implements
         return lp;
     }
 }
+

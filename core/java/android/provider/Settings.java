@@ -4313,6 +4313,12 @@ public final class Settings {
         public static final String APP_CIRCLE_BAR_TRIGGER_WIDTH = "app_circle_bar_trigger_width";
 
         /**
+         * Settings for clock font size
+         * @hide
+         */
+        public static final String STATUSBAR_CLOCK_FONT_SIZE = "statusbar_clock_font_size";
+
+        /**
          * Position of app circle bar trigger
          *
          * @hide
@@ -4808,6 +4814,12 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_CLOCK_DATE_COLOR = "lockscreen_clock_date_color";
+
+        /**
+         * Alternative recent apps integration using OmniSwitch
+         * @hide
+         */
+        public static final String RECENTS_USE_OMNISWITCH = "recents_use_omniswitch";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -7343,6 +7355,8 @@ public final class Settings {
                 "navigation_ring_targets_0",
                 "navigation_ring_targets_1",
                 "navigation_ring_targets_2",
+                "navigation_ring_targets_3",
+                "navigation_ring_targets_4",
         };
         
          /**
@@ -7418,6 +7432,13 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_HIDE_TILES_WITH_SENSITIVE_DATA =
                 "lockscreen_hide_qs_tiles_with_sensitive_data";
+
+        /**
+         * Whether to enable/disable device policy override.
+         * @hide
+         */
+        public static final String ENABLE_DEVICE_POLICY_OVERRIDE
+                = "enable_device_policy_override";
 
         /**
          * This are the settings to be backed up.

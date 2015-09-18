@@ -28,6 +28,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -539,7 +540,19 @@ public class TaskStackView extends FrameLayout implements TaskStack.TaskStackCal
 
         Task t = mStack.getTasks().get(mFocusedTaskIndex);
         TaskView tv = getChildViewForTask(t);
-        tv.dismissTask(0L);
+        tv.dismissTask();
+    }
+
+    /** Resets the focused task. */
+    void resetFocusedTask() {
+        if ((0 <= mFocusedTaskIndex) && (mFocusedTaskIndex < mStack.getTaskCount())) {
+            Task t = mStack.getTasks().get(mFocusedTaskIndex);
+            TaskView tv = getChildViewForTask(t);
+            if (tv != null) {
+                tv.unsetFocusedTask();
+            }
+        }
+        mFocusedTaskIndex = -1;
     }
 
     private boolean dismissAll() {
@@ -560,16 +573,12 @@ public class TaskStackView extends FrameLayout implements TaskStack.TaskStackCal
                 }
 
                 // Remove visible TaskViews
-                long dismissDelay = 0;
                 int childCount = getChildCount();
-                if (childCount > 0) {
-                    int delay = mConfig.taskViewRemoveAnimDuration / childCount;
-                    for (int i = 0; i < childCount; i++) {
-                        TaskView tv = (TaskView) getChildAt(i);
-                        tasks.remove(tv.getTask());
-                        tv.dismissTask(dismissDelay);
-                        dismissDelay += delay;
-                    }
+                if (!dismissAll() && childCount > 1) childCount--;
+                for (int i = 0; i < childCount; i++) {
+                    TaskView tv = (TaskView) getChildAt(i);
+                    tasks.remove(tv.getTask());
+                    tv.dismissTask();
                 }
 
                 int size = tasks.size();
@@ -583,20 +592,14 @@ public class TaskStackView extends FrameLayout implements TaskStack.TaskStackCal
                         }
                     }
                 }
+
+                // And remove all the excluded or all the other tasks
+                SystemServicesProxy ssp = RecentsTaskLoader.getInstance().getSystemServicesProxy();
+                if (size > 0) {
+                    ssp.removeAllUserTask(UserHandle.myUserId());
+                }
             }
         });
-    }
-
-    /** Resets the focused task. */
-    void resetFocusedTask() {
-        if ((0 <= mFocusedTaskIndex) && (mFocusedTaskIndex < mStack.getTaskCount())) {
-            Task t = mStack.getTasks().get(mFocusedTaskIndex);
-            TaskView tv = getChildViewForTask(t);
-            if (tv != null) {
-                tv.unsetFocusedTask();
-            }
-        }
-        mFocusedTaskIndex = -1;
     }
 
     @Override
@@ -977,22 +980,28 @@ public class TaskStackView extends FrameLayout implements TaskStack.TaskStackCal
         /*
         // Stash the scroll and filtered task for us to restore to when we unfilter
         mStashedScroll = getStackScroll();
+
         // Calculate the current task transforms
         ArrayList<TaskViewTransform> curTaskTransforms =
                 getStackTransforms(curTasks, getStackScroll(), null, true);
+
         // Update the task offsets
         mLayoutAlgorithm.updateTaskOffsets(mStack.getTasks());
+
         // Scroll the item to the top of the stack (sans-peek) rect so that we can see it better
         updateMinMaxScroll(false);
         float overlapHeight = mLayoutAlgorithm.getTaskOverlapHeight();
         setStackScrollRaw((int) (newStack.indexOfTask(filteredTask) * overlapHeight));
         boundScrollRaw();
+
         // Compute the transforms of the items in the new stack after setting the new scroll
         final ArrayList<Task> tasks = mStack.getTasks();
         final ArrayList<TaskViewTransform> taskTransforms =
                 getStackTransforms(mStack.getTasks(), getStackScroll(), null, true);
+
         // Animate
         mFilterAlgorithm.startFilteringAnimation(curTasks, curTaskTransforms, tasks, taskTransforms);
+
         // Notify any callbacks
         mCb.onTaskStackFilterTriggered();
         */
@@ -1004,20 +1013,26 @@ public class TaskStackView extends FrameLayout implements TaskStack.TaskStackCal
         // Calculate the current task transforms
         final ArrayList<TaskViewTransform> curTaskTransforms =
                 getStackTransforms(curTasks, getStackScroll(), null, true);
+
         // Update the task offsets
         mLayoutAlgorithm.updateTaskOffsets(mStack.getTasks());
+
         // Restore the stashed scroll
         updateMinMaxScroll(false);
         setStackScrollRaw(mStashedScroll);
         boundScrollRaw();
+
         // Compute the transforms of the items in the new stack after restoring the stashed scroll
         final ArrayList<Task> tasks = mStack.getTasks();
         final ArrayList<TaskViewTransform> taskTransforms =
                 getStackTransforms(tasks, getStackScroll(), null, true);
+
         // Animate
         mFilterAlgorithm.startFilteringAnimation(curTasks, curTaskTransforms, tasks, taskTransforms);
+
         // Clear the saved vars
         mStashedScroll = 0;
+
         // Notify any callbacks
         mCb.onTaskStackUnfilterTriggered();
         */
@@ -1129,7 +1144,7 @@ public class TaskStackView extends FrameLayout implements TaskStack.TaskStackCal
         }
     }
 
-     @Override
+    @Override
     public void onTaskFloatClicked(TaskView tv) {
         if (mCb != null) {
             mCb.onTaskFloatClicked(tv.getTask());
@@ -1300,7 +1315,7 @@ public class TaskStackView extends FrameLayout implements TaskStack.TaskStackCal
                         public void run() {
                             mStack.removeTask(t);
                         }
-                    }, 0L);
+                    });
                 } else {
                     // Otherwise, remove the task from the stack immediately
                     mStack.removeTask(t);

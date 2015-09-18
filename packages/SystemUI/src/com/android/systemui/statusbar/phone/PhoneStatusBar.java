@@ -590,6 +590,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.APP_SIDEBAR_POSITION),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_BOTTOM_ICONS_COLOR),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_SHOW_WEATHER_TEMP), 
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -692,6 +695,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.USE_SLIM_RECENTS))) {
                 updateRecents();
+            } else if (uri.equals(Settings.System.getUriFor(
+                   Settings.System.LOCKSCREEN_BOTTOM_ICONS_COLOR))) {
+                setBottomIconsColors();
             } else if (uri.equals(Settings.System.getUriFor(
                     Settings.System.RECENT_CARD_BG_COLOR))
                     || uri.equals(Settings.System.getUriFor(
@@ -1198,7 +1204,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         updateDisplaySize(); // populates mDisplayMetrics
         updateResources(null);
 
-        mIconSize = res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_icon_size);
+        mIconSize = res.getDimensionPixelSize(R.dimen.status_bar_icon_size);
 
         mStatusBarWindowContent = (FrameLayout) View.inflate(context,
                 R.layout.super_status_bar, null);
@@ -1687,6 +1693,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mStatusBarHeaderMachine.updateEnablement();
 
         UpdateNotifDrawerClearAllIconColor();
+        setBottomIconsColors();
 
         return mStatusBarView;
     }
@@ -2425,9 +2432,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private void updateNotificationIcons() {
         if (mNotificationIcons == null) return;
-
+        final int effectiveIconWidth = IconMerger.calculateIconWidth(mContext);
         final LinearLayout.LayoutParams params
-            = new LinearLayout.LayoutParams(mIconSize + 2*mIconHPadding, mNaturalBarHeight);
+            = new LinearLayout.LayoutParams(effectiveIconWidth, mNaturalBarHeight);
 
         ArrayList<Entry> activeNotifications = mNotificationData.getActiveNotifications();
         final int N = activeNotifications.size();
@@ -2843,6 +2850,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                             .start();
                 }
             }
+        }
+    }
+
+    public void setBottomIconsColors() {
+        int iconColor =
+                Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_BOTTOM_ICONS_COLOR, 0xffffffff);
+        if (mKeyguardBottomArea != null) {
+            mKeyguardBottomArea.updateIconColor(iconColor);
         }
     }
 
@@ -4682,7 +4698,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 com.android.internal.R.dimen.status_bar_height);
 
         int newIconSize = res.getDimensionPixelSize(
-            com.android.internal.R.dimen.status_bar_icon_size);
+            R.dimen.status_bar_icon_size);
         int newIconHPadding = res.getDimensionPixelSize(
             R.dimen.status_bar_icon_padding);
 
@@ -5499,6 +5515,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mVisualizerView.setVisible(true);
     }
 
+    public boolean isScreenOnFromKeyguard() {
+        return mScreenOnFromKeyguard;
+    }
+
     /**
      * This handles long-press of both back and recents.  They are
      * handled together to capture them both being long-pressed
@@ -5965,4 +5985,3 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 }
-

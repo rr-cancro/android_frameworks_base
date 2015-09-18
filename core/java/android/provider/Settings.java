@@ -3566,6 +3566,14 @@ public final class Settings {
         public static final String STATUSBAR_CLOCK_DATE_STYLE = "statusbar_clock_date_style";
 
         /**
+         * Position of date
+         * 0 - Left of clock
+         * 1 - Right of clock
+         * @hide
+         */
+        public static final String STATUSBAR_CLOCK_DATE_POSITION = "statusbar_clock_date_position";
+
+        /**
          * Stores the java DateFormat string for the date
          * @hide
          */
@@ -3775,6 +3783,12 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_MSIM_SHOW_EMPTY_ICONS = "status_bar_show_empty_sims";
+
+        /**
+         * Clean recent by shake
+         * @hide
+         */
+        public static final String SHAKE_CLEAN_RECENT = "shake_clean_recent";
 
         /**
          * Enable statusbar double tap gesture on to put device to sleep
@@ -4369,12 +4383,13 @@ public final class Settings {
          */
         public static final String DOZE_PULSE_ON_NOTIFICATIONS = "doze_pulse_on_notifications";
 
-	   /**
+     	 /**
          * Config for advanced power menu
          *
          * @hide
          */
         public static final String QUICK_TILE_CONFIG = "quick_tile_config";
+
 
         /**
          * Shake threshold for ambient display
@@ -4774,25 +4789,25 @@ public final class Settings {
         public static final String STATUS_BAR_CUSTOM_HEADER_PROVIDER = "status_bar_custom_header_provider";
 
          /**
-         * Change the color of the lockscreen bottom camera shortcut
+         * Change the color of the lockscreen bottom shortcut
          *
          * @hide
          */
-        public static final String LOCKSCREEN_CAMERA_ICON_COLOR = "lockscreen_camera_icon_color";
+        public static final String LOCKSCREEN_BOTTOM_ICONS_COLOR = "lockscreen_bottom_icons_color";
 
         /**
-         * Change the color of the lockscreen bottom phone shortcut
+         * Change the color of the lockscreen owner's info text
          *
          * @hide
          */
-        public static final String LOCKSCREEN_PHONE_ICON_COLOR = "lockscreen_phone_icon_color";
+        public static final String LOCKSCREEN_OWNER_INFO_COLOR = "lockscreen_owner_info_color";
 
         /**
-         * Change the color of the lockscreen lock icon
+         * Change the color of the lockscreen alarm text
          *
          * @hide
          */
-        public static final String LOCKSCREEN_LOCK_ICON_COLOR = "lockscreen_lock_icon_color";
+        public static final String LOCKSCREEN_ALARM_COLOR = "lockscreen_alarm_color";
 
         /**
          * Change the color of the lockscreen indication text
@@ -5905,10 +5920,10 @@ public final class Settings {
         public static final String LOCKSCREEN_TARGETS = "lockscreen_target_actions";
 
         /**
-         * Long press on lock screen lock icon to sleep
+         * Long press on lock screen lock icon to launch torch
          * @hide
          */
-        public static final String LONG_PRESS_LOCK_ICON_TO_SLEEP = "long_press_lock_icon_to_sleep";
+        public static final String LONG_PRESS_LOCK_ICON_TORCH = "long_press_lock_icon_torch";
 
         /**
          * Comma-separated list of location providers that activities may access. Do not rely on
@@ -7243,6 +7258,12 @@ public final class Settings {
         public static final String PRIVACY_GUARD_DEFAULT = "privacy_guard_default";
         
         /**
+         * Whether a notification should be shown if privacy guard is enabled
+         * @hide
+         */
+        public static final String PRIVACY_GUARD_NOTIFICATION = "privacy_guard_notification";
+
+        /**
          * Default theme to use.  If empty, use holo.
          * @hide
          */
@@ -7270,12 +7291,6 @@ public final class Settings {
          * @hide
          */
         public static final String THEME_PREV_BOOT_API_LEVEL = "theme_prev_boot_api_level";
-
-        /**
-         * Whether privacy guard notification should show.
-         * @hide
-         */
-        public static final String PRIVACY_GUARD_NOTIFICATION = "privacy_guard_notification";
 
         /**
          * Whether to include options in power menu for rebooting into recovery or bootloader
@@ -7492,10 +7507,10 @@ public final class Settings {
             UI_NIGHT_MODE,
             SLEEP_TIMEOUT,
             PRIVACY_GUARD_DEFAULT,
-            PRIVACY_GUARD_NOTIFICATION,
             ADVANCED_REBOOT,
             DEVELOPMENT_SHORTCUT,
-            STATUS_BAR_LOCKED_ON_SECURE_KEYGUARD
+            STATUS_BAR_LOCKED_ON_SECURE_KEYGUARD,
+            PRIVACY_GUARD_NOTIFICATION
         };
 
         /**
@@ -10015,4 +10030,5 @@ public final class Settings {
         return "android-" + Long.toHexString(androidId);
     }
 }
+
 

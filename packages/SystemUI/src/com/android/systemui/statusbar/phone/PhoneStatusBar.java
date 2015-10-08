@@ -338,6 +338,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     int mIconHPadding = -1;
     Display mDisplay;
     Point mCurrentDisplaySize = new Point();
+    int mCurrUiThemeMode;
 
     StatusBarWindowView mStatusBarWindow;
     FrameLayout mStatusBarWindowContent;
@@ -575,6 +576,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_GREETING_TIMEOUT),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_SNOOZE_TIME),
+                    false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_DRAWER_CLEAR_ALL_ICON_COLOR),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
@@ -624,6 +628,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_NETWORK_ACTIVITY),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.Secure.UI_THEME_MODE), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.Secure.UI_THEME_AUTO_MODE), false, this,
+                    UserHandle.USER_ALL);                    
             update();
         }
 
@@ -717,6 +727,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     || uri.equals(Settings.System.getUriFor(
                     Settings.System.RECENT_CARD_TEXT_COLOR))) {
                 rebuildRecentsScreen();
+             } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.System.HEADS_UP_SNOOZE_TIME))) {
+                final int snoozeTime = Settings.System.getIntForUser(
+                        mContext.getContentResolver(),
+                        Settings.System.HEADS_UP_SNOOZE_TIME,
+                        mContext.getResources().getInteger(
+                        R.integer.heads_up_snooze_time),
+                        UserHandle.USER_CURRENT);
+                setHeadsUpSnoozeTime(snoozeTime);
+                if (mHeadsUpNotificationView != null) {
+                    mHeadsUpNotificationView.setSnoozeVisibility(snoozeTime != 0);
+                }
+            } else if (uri.equals(Settings.System.getUriFor(
+                    Settings.Secure.UI_THEME_MODE))
+                    || uri.equals(Settings.System.getUriFor(
+                    Settings.Secure.UI_THEME_AUTO_MODE))) {
             }
             update();
 
@@ -1162,6 +1188,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         mStatusBarWindow = new StatusBarWindowView(mContext, null);
         mStatusBarWindow.mService = this;
+        mCurrUiThemeMode = mContext.getResources().getConfiguration().uiThemeMode;
 
         super.start(); // calls createAndAddWindows()
 
@@ -1275,6 +1302,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.HEADS_UP_NOTIFICATION_DECAY,
                     res.getInteger(R.integer.heads_up_notification_decay),
                     UserHandle.USER_CURRENT);
+
+            final int snoozeTime = Settings.System.getIntForUser(
+                    mContext.getContentResolver(),
+                    Settings.System.HEADS_UP_SNOOZE_TIME,
+                    res.getInteger(R.integer.heads_up_snooze_time),
+                    UserHandle.USER_CURRENT);
+            setHeadsUpSnoozeTime(snoozeTime);
+            mHeadsUpNotificationView.setSnoozeVisibility(snoozeTime != 0);
         }
         if (MULTIUSER_DEBUG) {
             mNotificationPanelDebugText = (TextView) mNotificationPanel.findViewById(
@@ -4335,6 +4370,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 notifyHeadsUpScreenOn(false);
                 finishBarAnimations();
                 resetUserExpandedStates();
+                resetHeadsUpSnoozeTimer();
             }
             else if (Intent.ACTION_CONFIGURATION_CHANGED.equals(action)) {
                 Configuration config = mContext.getResources().getConfiguration();
@@ -4640,6 +4676,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
      */
     void updateResources(Configuration newConfig) {
         SettingsObserver observer = new SettingsObserver(mHandler);
+        final Context context = mContext;
 
         // detect theme change.
         ThemeConfig newTheme = newConfig != null ? newConfig.themeConfig : null;
@@ -4660,7 +4697,20 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mQSPanel.updateResources();
         }
 
-        loadDimens();
+        // detect theme ui mode change
+        final Resources res = context.getResources();
+        int uiThemeMode = res.getConfiguration().uiThemeMode;
+        if (uiThemeMode != mCurrUiThemeMode) {
+            mCurrUiThemeMode = uiThemeMode;
+            // Needs to recreate statusbar 
+            recreateStatusBar();
+            observer.update();
+            addSidebarView();
+            attachPieContainer(isPieEnabled());
+        } else {
+            loadDimens();
+        }
+
         mLinearOutSlowIn = AnimationUtils.loadInterpolator(
                 mContext, android.R.interpolator.linear_out_slow_in);
 

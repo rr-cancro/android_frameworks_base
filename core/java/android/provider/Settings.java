@@ -2759,6 +2759,24 @@ public final class Settings {
          */
         public static final String QS_BACKGROUND_COLOR = "qs_background_color";
 
+        /**
+         * Color of the notifications icon background
+         * @hide
+         */
+        public static final String NOTIFICATION_APP_ICON_BG_COLOR = "notification_app_icon_bg_color";
+
+        /**
+         * Color of the notification text
+         * @hide
+         */
+        public static final String NOTIFICATION_TEXT_COLOR = "notification_text_color";
+
+        /**
+         * Color of the notifications background
+         * @hide
+         */
+        public static final String NOTIFICATION_BG_COLOR = "notification_bg_color";
+
          /**
          * Transparent shade
          * @hide
@@ -4387,6 +4405,13 @@ public final class Settings {
         public static final String APP_CIRCLE_BAR_TRIGGER_HEIGHT = "app_circle_bar_trigger_height";
 
         /**
+         * Defines global heads up snooze time if user want to snooze it.
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_SNOOZE_TIME = "heads_up_snooze_time";
+
+        /**
          * Whether to display the trigger region or not
          *
          * @hide
@@ -4932,6 +4957,12 @@ public final class Settings {
          * @hide
          */
         public static final String DISABLE_TORCH_ON_SCREEN_OFF_DELAY = "disable_torch_on_screen_off_delay";
+
+        /**
+         * TRDS: Override custom notification and qs colors on theme change
+         * @hide
+         */
+        public static final String OVERRIDE_CUSTOM_COLORS = "override_custom_colors";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -7184,6 +7215,21 @@ public final class Settings {
         public static final String UI_NIGHT_MODE = "ui_night_mode";
 
         /**
+         * The current theme mode that has been selected by the user.  Owned
+         * and controlled by UiModeManagerService.
+         * @hide
+         */
+        public static final String UI_THEME_MODE = "ui_theme_mode";
+
+        /**
+         * Auto theme mode which switches either based on daytime or lightsensor
+         * values: 0 = manual (default), 1 = auto twilight (based on daytime)
+         * 2 = auto lightsensor (based on light conditions)
+         * @hide
+         */
+        public static final String UI_THEME_AUTO_MODE = "ui_theme_auto_mode";
+
+        /**
          * Whether screensavers are enabled.
          * @hide
          */
@@ -7616,6 +7662,8 @@ public final class Settings {
             MOUNT_UMS_NOTIFY_ENABLED,
             UI_NIGHT_MODE,
             SLEEP_TIMEOUT,
+            UI_THEME_MODE,
+            UI_THEME_AUTO_MODE,
             PRIVACY_GUARD_DEFAULT,
             ADVANCED_REBOOT,
             DEVELOPMENT_SHORTCUT,

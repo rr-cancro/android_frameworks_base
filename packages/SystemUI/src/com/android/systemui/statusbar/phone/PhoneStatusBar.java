@@ -179,6 +179,7 @@ import com.android.systemui.statusbar.EmptyShadeView;
 import com.android.systemui.statusbar.ExpandableNotificationRow;
 import com.android.systemui.statusbar.GestureRecorder;
 import com.android.systemui.statusbar.KeyguardIndicationController;
+import com.android.systemui.statusbar.MediaExpandableNotificationRow;
 import com.android.systemui.statusbar.NotificationData;
 import com.android.systemui.statusbar.NotificationData.Entry;
 import com.android.systemui.statusbar.NotificationOverflowContainer;
@@ -634,6 +635,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.Secure.UI_THEME_AUTO_MODE), false, this,
                     UserHandle.USER_ALL);                    
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.QS_NUM_TILE_COLUMNS), false, this,
+                    UserHandle.USER_ALL);
             update();
         }
 
@@ -859,9 +863,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 boolean showIndicators = Settings.System.getIntForUser(
                         mContext.getContentResolver(), Settings.System.STATUS_BAR_NETWORK_ACTIVITY, 0, mCurrentUserId) == 1;
                 mNetworkController.setShowIndicators(showIndicators);
+            		}
+       		
+            if (mQSPanel != null) {
+                mQSPanel.updateNumColumns();
             }
-       }
     }
+ }
 
     private void forceAddNavigationBar() {
         // If we have no Navbar view and we should have one, create it
@@ -1332,14 +1340,23 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mNavigationBarView.setDisabledFlags(mDisabled);
         mNavigationBarView.setBar(this);
         addNavigationBarCallback(mNavigationBarView);
+        mNavigationBarView.setOnVerticalChangedListener(
+                new NavigationBarView.OnVerticalChangedListener() {
+            @Override
+            public void onVerticalChanged(boolean isVertical) {
+                if (mSearchPanelView != null) {
+                    mSearchPanelView.setHorizontal(isVertical);
+                }
+                mNotificationPanel.setQsScrimEnabled(!isVertical);
+            }
+        });
         mNavigationBarView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 checkUserAutohide(v, event);
-                return false;            
-             }
-
-            });
+                return false;
+            }
+        });
 
         // Setup pie container if enabled
         attachPieContainer(isPieEnabled());
@@ -2719,6 +2736,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     mMediaController.unregisterCallback(mMediaListener);
                 }
                 mMediaController = controller;
+                if (mediaNotification != null
+                        && mediaNotification.row != null
+                        && mediaNotification.row instanceof MediaExpandableNotificationRow) {
+                    ((MediaExpandableNotificationRow) mediaNotification.row)
+                            .setMediaController(controller);
+                }
+
 
                 if (mMediaController != null) {
                     mMediaController.registerCallback(mMediaListener);
@@ -3217,6 +3241,11 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     @Override  // NotificationData.Environment
     public String getCurrentMediaNotificationKey() {
         return mMediaNotificationKey;
+    }
+
+    @Override
+    protected MediaController getCurrentMediaController() {
+        return mMediaController;
     }
 
     public boolean isScrimSrcModeEnabled() {
@@ -3746,9 +3775,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
             // private flag to permit a transparent navbar when the bar is vertical (landscape)
             // this is buggy unless carefully controlled.
-            if (mNavigationBarView != null) {
+            if ((diff & View.SYSTEM_UI_ALLOW_TRANSPARENT_VERTICAL_NAV) != 0 &&
+                mNavigationBarView != null) {
                 mNavigationBarView.setTransparencyAllowedWhenVertical(
-                        (diff & View.SYSTEM_UI_ALLOW_TRANSPARENT_VERTICAL_NAV) != 0);
+                        (vis & View.SYSTEM_UI_ALLOW_TRANSPARENT_VERTICAL_NAV) != 0);
             }
 
             mSystemUiVisibility = newVal;

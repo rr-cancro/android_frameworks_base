@@ -51,6 +51,7 @@ import android.database.ContentObserver;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.media.session.MediaController;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -890,6 +891,10 @@ public abstract class BaseStatusBar extends SystemUI implements
         return null;
     }
 
+    protected MediaController getCurrentMediaController() {
+        return null;
+    }
+
     /**
      * Takes the necessary steps to prepare the status bar for starting an activity, then starts it.
      * @param action A dismiss action that is called if it's safe to start the activity.
@@ -1000,41 +1005,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         startNotificationGutsIntent(intent, appUid);
     }
 
-    private void launchFloating(PendingIntent pIntent) {
-        Intent overlay = new Intent();
-        overlay.addFlags(Intent.FLAG_FLOATING_WINDOW | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        try {
-            ActivityManagerNative.getDefault().resumeAppSwitches();
-        } catch (RemoteException e) {
-        }
-        try {
-            pIntent.send(mContext, 0, overlay);
-        } catch (PendingIntent.CanceledException e) {
-            // the stack trace isn't very helpful here.  Just log the exception message.
-            Slog.w(TAG, "Sending contentIntent failed: " + e);
-        }
-        final boolean keyguardShowing = mStatusBarKeyguardViewManager.isShowing();
-        dismissKeyguardThenExecute(new OnDismissAction() {
-            @Override
-            public boolean onDismiss() {
-                AsyncTask.execute(new Runnable() {
-                    public void run() {
-                        try {
-                            if (keyguardShowing) {
-                                ActivityManagerNative.getDefault()
-                                        .keyguardWaitingForActivityDrawn();
-                            }
-                            overrideActivityPendingAppTransition(keyguardShowing);
-                        } catch (RemoteException e) {
-                        }
-                    }
-                });
-                animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_RECENTS_PANEL, true /* force */);
-                return true;
-            }
-        }, false /* afterKeyguardGone */);
-    }
-
     private void startNotificationGutsIntent(final Intent intent, final int appUid) {
         final boolean keyguardShowing = mStatusBarKeyguardViewManager.isShowing();
         dismissKeyguardThenExecute(new OnDismissAction() {
@@ -1073,7 +1043,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         row.setTag(sbn.getPackageName());
         final View guts = row.findViewById(R.id.notification_guts);
         final String pkg = sbn.getPackageName();
-        final PendingIntent contentIntent = sbn.getNotification().contentIntent;
         String appname = pkg;
         Drawable pkgicon = null;
         int appUid = -1;
@@ -1093,7 +1062,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         ((ImageView) row.findViewById(android.R.id.icon)).setImageDrawable(pkgicon);
         ((DateTimeView) row.findViewById(R.id.timestamp)).setTime(sbn.getPostTime());
         ((TextView) row.findViewById(R.id.pkgname)).setText(appname);
-        final View floatButton = guts.findViewById(R.id.notification_float_item);
         final View settingsButton = guts.findViewById(R.id.notification_inspect_item);
         final View appSettingsButton
                 = guts.findViewById(R.id.notification_inspect_app_provided_settings);
@@ -1106,12 +1074,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 }
             });
 
-            floatButton.setVisibility(View.VISIBLE);
-            floatButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    launchFloating(contentIntent);
-                }
-            });
             filterButton.setVisibility(View.VISIBLE);
             filterButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -1158,7 +1120,6 @@ public abstract class BaseStatusBar extends SystemUI implements
             }
         } else {
             settingsButton.setVisibility(View.GONE);
-            floatButton.setVisibility(View.GONE);
             appSettingsButton.setVisibility(View.GONE);
             filterButton.setVisibility(View.GONE);
         }
@@ -1176,6 +1137,11 @@ public abstract class BaseStatusBar extends SystemUI implements
                 }
                 if (v.getWindowToken() == null) {
                     Log.e(TAG, "Trying to show notification guts, but not attached to window");
+                    return false;
+                }
+
+                if (v instanceof MediaExpandableNotificationRow
+                        && !((MediaExpandableNotificationRow) v).inflateGuts()) {
                     return false;
                 }
 
@@ -1686,8 +1652,20 @@ public abstract class BaseStatusBar extends SystemUI implements
             // create the row view
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
-            row = (ExpandableNotificationRow) inflater.inflate(R.layout.status_bar_notification_row,
-                    parent, false);
+
+            // cannot use isMediaNotification()
+            if (sbn.getNotification().category != null
+                    && sbn.getNotification().category.equals(Notification.CATEGORY_TRANSPORT)) {
+                Log.d("ro", "inflating media notification");
+                row = (MediaExpandableNotificationRow) inflater.inflate(
+                        R.layout.status_bar_notification_row_media, parent, false);
+                ((MediaExpandableNotificationRow)row).setMediaController(
+                        getCurrentMediaController());
+            } else {
+                row = (ExpandableNotificationRow) inflater.inflate(
+                        R.layout.status_bar_notification_row,
+                        parent, false);
+            }
             row.setExpansionLogger(this, entry.notification.getKey());
         }
 

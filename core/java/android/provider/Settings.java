@@ -3062,6 +3062,13 @@ public final class Settings {
                 "notification_light_brightness_level";
 
         /**
+         * Whether to use the all the LEDs for the notifications or just one.
+         * @hide
+         */
+        public static final String NOTIFICATION_LIGHT_MULTIPLE_LEDS_ENABLE =
+                "notification_light_multiple_leds_enable";
+
+        /**
          * Whether to allow notifications with the screen on or DayDreams.
          * The value is boolean (1 or 0). Default will always be false.
          * @hide
@@ -4965,6 +4972,13 @@ public final class Settings {
         public static final String OVERRIDE_CUSTOM_COLORS = "override_custom_colors";
 
         /**
+         * Whether to attach a queue to media notifications.
+         * 0 = 0ff, 1 = on
+         * @hide
+         */
+        public static final String NOTIFICATION_PLAY_QUEUE = "notification_play_queue";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
@@ -5051,6 +5065,7 @@ public final class Settings {
             NONE_IS_SILENT,
             ALLOW_LIGHTS,
             NOTIFICATION_LIGHT_BRIGHTNESS_LEVEL,
+            NOTIFICATION_LIGHT_MULTIPLE_LEDS_ENABLE,
             NOTIFICATION_LIGHT_SCREEN_ON
         };
 
@@ -7501,6 +7516,19 @@ public final class Settings {
         public static final String QS_USE_MAIN_TILES = "sysui_qs_main_tiles";
 
         /**
+         * Whether to show detail view for the wi-fi tile
+         * @hide
+         */
+        public static final String QS_WIFI_DETAIL = "qs_wifi_detail";
+
+        /**
+         * Number of columns to display on the quick settings panel
+         * Default is 3
+         * @hide
+         */
+        public static final String QS_NUM_TILE_COLUMNS = "sysui_qs_num_tile_columns";
+
+        /**
          * Whether detail view for the location tile is enabled
          * @hide
          */
@@ -7520,8 +7548,6 @@ public final class Settings {
                 "navigation_ring_targets_0",
                 "navigation_ring_targets_1",
                 "navigation_ring_targets_2",
-                "navigation_ring_targets_3",
-                "navigation_ring_targets_4",
         };
         
          /**

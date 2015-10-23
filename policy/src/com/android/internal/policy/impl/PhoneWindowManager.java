@@ -1883,7 +1883,17 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void updateKeyAssignments() {
         int activeHardwareKeys = mDeviceHardwareKeys;
 
-        if (!hasHwKeysEnabled()) {
+        final int showByDefault = mContext.getResources().getBoolean(
+                    com.android.internal.R.bool.config_showNavigationBar) ? 1 : 0;
+        mHasNavigationBar = Settings.System.getIntForUser(mContext.getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_SHOW, showByDefault,
+                    UserHandle.USER_CURRENT) == 1;
+        
+        if (mHasNavigationBar) {
+		
+		}
+	    
+	    if (!hasHwKeysEnabled()) {
             activeHardwareKeys = 0;
         }
 
@@ -2117,6 +2127,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     public void updateSettings() {
+        Slog.i(TAG, "+++++ updateSettings() mUserRotationMode; " + mUserRotationMode + ", mUserRotation: " + mUserRotation);
         ContentResolver resolver = mContext.getContentResolver();
         boolean updateRotation = false;
         int mDeviceHardwareWakeKeys = mContext.getResources().getInteger(
@@ -2306,6 +2317,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
             WindowManagerPolicyControl.reloadFromSetting(mContext);
         }
+        Slog.i(TAG, "----- updateSettings() mUserRotationMode; " + mUserRotationMode + ", mUserRotation: " + mUserRotation + "updateRotation: " + updateRotation);
         if (updateRotation) {
             updateRotation(true);
         }
@@ -6774,7 +6786,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     @Override
     public int rotationForOrientationLw(int orientation, int lastRotation) {
-        if (false) {
+        if (true) {
             Slog.v(TAG, "rotationForOrientationLw(orient="
                         + orientation + ", last=" + lastRotation
                         + "); user=" + mUserRotation + " "
@@ -6988,6 +7000,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // User rotation: to be used when all else fails in assigning an orientation to the device
     @Override
     public void setUserRotationMode(int mode, int rot) {
+        Slog.i(TAG, "setUserRotationMode() called with " + "mode = [" + mode + "], rot = [" + rot + "]");
         ContentResolver res = mContext.getContentResolver();
 
         // mUserRotationMode and mUserRotation will be assigned by the content observer
@@ -7706,10 +7719,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     // overridden by qemu.hw.mainkeys in the emulator.
     @Override
     public boolean hasNavigationBar() {
-        return mOverWriteHasNavigationBar
-            ? mHasNavigationBar
-            : mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_showNavigationBar);
+        return mHasNavigationBar;
     }
 
     public boolean needsNavigationBar() {
@@ -7983,4 +7993,3 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         return false;
     }
 }
-

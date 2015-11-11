@@ -151,6 +151,7 @@ import android.widget.TextView;
 import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.util.cm.ActionUtils;
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
+import com.android.keyguard.KeyguardUpdateMonitor;
 import com.android.keyguard.ViewMediatorCallback;
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.BatteryLevelTextView;
@@ -2139,8 +2140,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         lp.packageName = mContext.getPackageName();
         lp.windowAnimations = R.style.Animation_StatusBar_HeadsUp;
 
-        if(mHeadsUpNotificationView.getWindowToken() == null) {
+        if(mHeadsUpNotificationView.getWindowToken() == null && (!mHeadsUpNotificationView.isAttachedToWindow())) {
             mWindowManager.addView(mHeadsUpNotificationView, lp);
+        } else {
+            mWindowManager.updateViewLayout(mHeadsUpNotificationView, lp);
         }
     }
 
@@ -2826,8 +2829,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             backdropBitmap = mBlurredImage;
             // might still be null
         }
-
-        boolean keyguardVisible = (mState != StatusBarState.SHADE);
+        // HACK: Consider keyguard as visible if showing sim pin security screen
+        KeyguardUpdateMonitor updateMonitor = KeyguardUpdateMonitor.getInstance(mContext);
+        boolean keyguardVisible = mState != StatusBarState.SHADE || updateMonitor.isSimPinSecure();
 
         if (!mKeyguardFadingAway && keyguardVisible && backdropBitmap != null && mScreenOn) {
             // if there's album art, ensure visualizer is visible
@@ -4635,7 +4639,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         makeStatusBarView();
         repositionNavigationBar();
-        addHeadsUpView();
+        mHeadsUpObserver.onChange(true);
+        if (mUseHeadsUp) {
+            addHeadsUpView();
+        }
         attachPieContainer(isPieEnabled());
         if (mNavigationBarView != null) {
             mNavigationBarView.updateResources(getNavbarThemedResources());
